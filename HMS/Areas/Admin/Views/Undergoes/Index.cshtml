@@ -1,0 +1,114 @@
+﻿@{
+    ViewData["Title"] = "Affiliated With List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="cus-border bg-light rounded">
+    <div class="row p-1">
+        <div class="col-6">
+            <h3 class="pl-2">Undergoes List</h3>
+        </div>
+        <div class="col-6 text-right">
+            <a asp-action="AddUndergoes" class="btn btn-primary text-white">
+                <i class="fas fa-plus"></i> &nbsp; New Undergoes
+            </a>
+        </div>
+        <hr class="w-75" />
+    </div>
+    <br />
+    <table id="tblData" class="table table-striped table-bordered pl-1 pr-1" style="width:100%">
+        <thead>
+            <tr>
+                <th>Sr.No.</th>
+                <th>Procedure Name</th>
+                <th>Doctor Name</th>
+                <th>Patient Name</th>
+                <th></th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+@section Scripts{
+    <script>
+        jQuery.noConflict()(function ($) {
+            $(document).ready(function () {
+                loadDataTable();
+            })
+        })
+        var dataTable;
+        function loadDataTable() {
+            dataTable = $('#tblData').DataTable({
+                "ajax": {
+                    "url": "/Admin/Undergoes/GetAll",
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "id", "width": "10%" },
+                    { "data": "procedure.name", "width": "30%" },
+                    { "data": "doctors.name", "width": "21%" },
+                    { "data": "patients.name", "width": "21%" },
+                    {
+                        "data": "id",
+                        "render": function (data) {
+                            return `<div class="text-center">
+                                <a href="/Admin/Undergoes/Detail/${data}" class="btn btn-primary" style="cursor:pointer; width:40px">
+                                    <i class="fas fa-eye" style="color:white"></i>
+                                </a>
+                                &nbsp;
+                                <a href="/Admin/Undergoes/AddUndergoes/${data}" class="btn btn-primary" style="cursor:pointer; width:40px">
+                                    <i class="fas fa-edit" style="color:white"></i>
+                                </a>
+                                &nbsp;
+                                <a onclick=Delete("/Admin/Undergoes/Delete/${data}") class="btn btn-danger" style="cursor:pointer; width:40px">
+                                    <i class="fas fa-trash-alt" style="color:white"></i>
+                                </a>
+                            </div>`;
+                        },
+                        "width": "18%"
+                    }
+                ],
+                "language": {
+                    "emptyTable": "No Record Found!"
+                }
+            })
+        }
+        function Delete(url) {
+            swal({
+                title: "ARE YOU SURE YOU WANT TO DELETE IT?",
+                text: "YOU WILL NOT BE ABLE TO RESTORE IT!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#BD6B55",
+                confirmButtonText: "YES, DELETE IT",
+                closeOnConfirm: true
+            },
+                function () {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: url,
+                        success: function (data) {
+                            if (data.success) {
+                                toastr.success(data.message);
+                                dataTable.ajax.reload();
+                            }
+                            else {
+                                toastr.error(data.message);
+                            }
+                        }
+                    })
+                }
+            )
+        }
+    </script>
+    <style>
+        .cus-border {
+            border: 2px solid #004481;
+        }
+
+        hr {
+            border-color: black;
+        }
+    </style>
+}
