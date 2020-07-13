@@ -9,14 +9,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace HMS.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class Affiliated : Controller
+    public class Treatment : Controller
     {
         private readonly IUnitofWork _unitofWork;
 
         [BindProperty]
         public AdminViewModels AVM { get; set; }
 
-        public Affiliated(IUnitofWork unitofWork)
+        public Treatment(IUnitofWork unitofWork)
         {
             _unitofWork = unitofWork;
         }
@@ -26,18 +26,18 @@ namespace HMS.Areas.Admin.Controllers
             return View();
         }
 
-        public IActionResult AddAffiliated(int? id)
+        public IActionResult AddTreatment(int? id)
         {
             AVM = new AdminViewModels()
             {
-                Affiliated = new Models.Affiliated(),
+                Treatment = new Models.Treatment(),
                 DoctorsList = _unitofWork.Doctors.GetDropDownListForDoctors(),
-                DepartmentsList = _unitofWork.Department.GetDropDownListForDepartments()
+                ProceduresList = _unitofWork.Procedure.GetDropDownListForProcedure()
             };
 
             if(id != null)
             {
-                AVM.Affiliated = _unitofWork.Affiliated.Get(id.GetValueOrDefault());
+                AVM.Treatment = _unitofWork.Treatment.Get(id.GetValueOrDefault());
             }
 
             return View(AVM);
@@ -45,17 +45,17 @@ namespace HMS.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult AddAffiliated()
+        public IActionResult AddTreatment()
         {
             if (ModelState.IsValid)
             {
-                if(AVM.Affiliated.Id == 0)
+                if(AVM.Treatment.Id == 0)
                 {
-                    _unitofWork.Affiliated.Add(AVM.Affiliated);
+                    _unitofWork.Treatment.Add(AVM.Treatment);
                 }
                 else
                 {
-                    _unitofWork.Affiliated.Update(AVM.Affiliated);
+                    _unitofWork.Treatment.Update(AVM.Treatment);
                 }
 
                 _unitofWork.Save();
@@ -65,7 +65,7 @@ namespace HMS.Areas.Admin.Controllers
             else
             {
                 AVM.DoctorsList = _unitofWork.Doctors.GetDropDownListForDoctors();
-                AVM.DepartmentsList = _unitofWork.Department.GetDropDownListForDepartments();
+                AVM.ProceduresList = _unitofWork.Procedure.GetDropDownListForProcedure();
 
                 return View(AVM);
             }
@@ -75,23 +75,23 @@ namespace HMS.Areas.Admin.Controllers
 
         public IActionResult GetAll()
         {
-            return Json(new { data = _unitofWork.Affiliated.GetAll(includeProperties: "Doctors,Department") });
+            return Json(new { data = _unitofWork.Treatment.GetAll(includeProperties: "Doctors,Procedure") });
         }
 
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var aFromDb = _unitofWork.Affiliated.Get(id);
+            var tFromDb = _unitofWork.Treatment.Get(id);
 
-            if(aFromDb == null)
+            if(tFromDb == null)
             {
-                return Json(new { success = false, message = "Error Deleting Affiliated With Record!" });
+                return Json(new { success = false, message = "Error Deleting Treatment Record!" });
             }
 
-            _unitofWork.Affiliated.Remove(aFromDb);
+            _unitofWork.Treatment.Remove(tFromDb);
             _unitofWork.Save();
 
-            return Json(new { success = true, message = "Affiliated With Record Deleted Successfully!" });
+            return Json(new { success = true, message = "Treatment Record Deleted Successfully!" });
         }
 
         #endregion
