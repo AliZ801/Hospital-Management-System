@@ -34,6 +34,8 @@ namespace HMS.DataAccess.Data.IRepository
 
         IUndergoesRepo Undergoes { get; }
 
+        IUserRepo User { get; }
+
         void Save();
     }
 }

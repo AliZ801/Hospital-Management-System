@@ -41,5 +41,7 @@ namespace HMS.DataAccess.Data
         public DbSet<Treatment> Treatments { get; set; }
 
         public DbSet<Undergoes> Undergoes { get; set; }
+
+        public DbSet<ApplicationUser> applicationUser { get; set; }
     }
 }

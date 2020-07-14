@@ -26,6 +26,7 @@ namespace HMS.DataAccess.Data.Repository
             Procedure = new ProcedureRepo(_db);
             Treatment = new TreatmentRepo(_db);
             Undergoes = new UndergoesRepo(_db);
+            User = new UserRepo(_db);
         }
 
         public IPatientsRepo Patients { get; private set; }
@@ -55,6 +56,8 @@ namespace HMS.DataAccess.Data.Repository
         public ITreatmentRepo Treatment { get; private set; }
 
         public IUndergoesRepo Undergoes { get; private set; }
+
+        public IUserRepo User { get; private set; }
 
         public void Dispose()
         {

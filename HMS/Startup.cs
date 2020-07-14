@@ -14,6 +14,8 @@ using Microsoft.Extensions.Hosting;
 using HMS.DataAccess.Data;
 using HMS.DataAccess.Data.IRepository;
 using HMS.DataAccess.Data.Repository;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using HMS.Utility;
 
 namespace HMS
 {
@@ -32,8 +34,9 @@ namespace HMS
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddSingleton<IEmailSender, EmailSender>();
             services.AddScoped<IUnitofWork, UnitofWork>();
             services.AddControllersWithViews().AddNewtonsoftJson().AddRazorRuntimeCompilation();
             services.AddRazorPages();

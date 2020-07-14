@@ -5,12 +5,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using HMS.DataAccess.Data.IRepository;
 using HMS.Models.ViewModels;
+using HMS.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HMS.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Admin)]
+    [Authorize(Roles = SD.Manager)]
     public class Patients : Controller
     {
         private readonly IUnitofWork _unitofWork;
